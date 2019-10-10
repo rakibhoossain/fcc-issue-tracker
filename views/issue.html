@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Issue Tracker for freeCodeCamp - by Rakib</title>
+    <meta name="description" content="A project for freeCodeCamp's Information Security and Quality Assurance certification">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://cdn.glitch.com/b39281f3-c76d-42e6-97c0-8105f809af4e%2Ffavicon.jpg?1554901775606">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+    
+    <!-- We'll be running jQuery scripts to handle the form submission and handle fetching/presenting existing issues. Script is in HTTPS because our site is in HTTPS. -->
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous">
+    </script>
+    
+  </head>
+
+
+  <body>
+    
+    <div class="container">
+
+      <header>
+        <h1 id="projectTitle"></h1>
+      </header>
+
+      
+      <div id="submitNewIssue">
+
+        <form id="newIssue" method="post" action="/api/">
+          <h3>Submit a new issue</h3>
+          <div class="form-fields">
+            <div class="form-left">
+              <label for="issue_title">Title</label>
+              <input type="text" name="issue_title" id="issue_title" required>
+              <label for="issue_text">Description</label>
+              <textarea type="text" name="issue_text" id="issue_text" required></textarea>
+            </div>
+            <div class="form-right">
+              <label for="created_by">Created by</label>
+              <input type="text" name="created_by" id="created_by" required>
+              <label for="assigned_to">Assigned to</label>
+              <input type="text" name="assigned_to" id="assigned_to">
+              <label for="status_text">Issue status</label>
+              <input type="text" name="status_text" id="status_text">
+            </div>
+          </div>
+          <button type="submit">Submit Issue</button>
+        </form>
+
+      </div>
+
+      <div id="issueDisplay">
+        <!-- our script will be appending a whole bunch of data (all the issues) in this div. -->
+      </div>
+    
+    </div> <!-- END of container -->
+    
+      <script>
+        
+        // As soon as the page is loaded (or reloaded) up to here, the following function will run:
+        $(function() {
+          // We'll retrieve the desired project name from the page's URL pathname, making sure to remove any "/" from it...
+          let currentProject = window.location.pathname.replace(/\//g, "");;
+          // ... with the project name in hand, we'll now be able to define the target URL for our GET method request...
+          let url = "/api/issues/" + currentProject;
+          // ... and we'll also update the title of the page to confirm which project's issues we're working with:
+          $("#projectTitle").text("All issues for: " + currentProject)
+          
+          
+          // Now that we're all set up, we'll make our GET method request to our saved URL:
+          $.ajax({
+            type: "GET",
+            url: url,
+            success: function(data)
+            {
+              // If the GET method is successful, we'll work on saving the incoming data into an array of "issue cards" that we'll later insert into our DIV #issueDisplay:
+              let issues= [];
+              
+              // Let's loop through each object in the data we've received and create a new "issue card" for each element in the data:
+              data.forEach(function(ele) {
+                
+                // Because the "open" property of our issue is a boolean, we'll have to convert it into a string so that we can post it nicely (otherwise: "undefined"):
+                let openstatus;
+                (ele.open) ? openstatus = "open" : openstatus = "closed";
+                
+                // We'll also split the created_on and updated_on dates into more visually appealing strings:
+                let dayCreated = ele.created_on.substring(0, 10) + " at " + ele.created_on.substring(11,16).replace(":", "h");
+                let dayUpdated = ele.updated_on.substring(0, 10) + " at " + ele.updated_on.substring(11,16).replace(":", "h");
+                
+                // Finally, we'll take into consideration the possiblity that there might not be an assigned_to property for our current object/issue:
+                let assignedToStr;
+                (ele.assigned_to) ? (assignedToStr = " and assigned to <b>" + ele.assigned_to + "</b>") : (assignedToStr = "");
+                
+                
+                // Now that we have all of our information in hand, we'll build the HTML for the given element's "issue card":
+                let single = [
+                  "<div class=\"issue " + openstatus + "\">",
+                  "<h3>" + ele.issue_title + "</h3>",
+                  "<h2 class=\"issueId\">Issue ID: " + ele._id + "</h2>",
+                  "<label>Description:<p class=\"description\">" + ele.issue_text + "</p></label>",
+                  "<label>Issue status:<p class=\"status\">" + ele.status_text + "</p></label>",
+                  "<div class=\"buttons\">",
+                  "<button class=\"closeIssue\" title=\"Close this issue\" id=\"" + ele._id + "\">Close issue</button>",
+                  "<button class=\"deleteIssue\" title=\"Delete this issue\" id=\"" + ele._id + "\">Delete issue</button>",
+                  "</div>",
+                  "<div class=\"issueDetails\">Created by <b>" + ele.created_by + "</b> on " + dayCreated + assignedToStr + "</b>.&emsp;Last update: " + dayUpdated + "</div>",
+                  "</div>"
+                ];
+                
+                // With the "issue card" ready, we'll add it to our array of cards:
+                issues.push(single.join(""));
+              
+              });  // END of .forEach()
+              
+              // With all of our "issue cards" ready, we'll insert them into our page's #issueDisplay DIV:
+              $("#issueDisplay").html(issues.join(""));
+              
+            }  // END of GET request's success()
+          });  // END of GET request
+          
+          
+          
+          // When the "new issue" form is submitted, we want the following to happen:
+          $("#newIssue").submit(function(e){
+            e.preventDefault();  // To stop the form from actually submitting so that we can do our ajax call
+            
+            // Trigger a POST action targeting the project-specific collection in our database
+            $(this).attr("action", "/api/issues/" + currentProject);
+            $.ajax({
+              type: "POST",
+              url: url,
+              data: $(this).serialize(),
+              success: function(data) { window.location.reload(true); }  // If everything goes well, we want the page to reload (so we can fetch the updated issue list).
+            });
+          });
+          
+          
+          // When the "close issue" button on an existing issue is clicked, we want the following to happen:
+          $("#issueDisplay").on("click", ".closeIssue", function(e) {
+            e.preventDefault();  // To stop the form from actually submitting so that we can do our ajax call
+            
+            // Trigger a PUT action targeting the project-specific collection in our database:
+            let url = "/api/issues/" + currentProject;
+            $.ajax({
+              type: "PUT",
+              url: url,
+              data: {_id: $(this).attr("id"), open: false},
+              success: function(data) { alert(data); window.location.reload(true); }  // If all goes well, we'll alert the user and reload the page to fetch updated data.
+            });
+          });
+          
+          
+          // When the "delete issue" button on an existing issue is clicked, we want the following to happen:
+          $("#issueDisplay").on("click",".deleteIssue", function(e) {
+            e.preventDefault();  // To stop the page from reloading when the delete button is clicked
+            // Trigger a DELETE action targeting the project-specific collection in our database:
+            let url = "/api/issues/" + currentProject;
+            $.ajax({
+              type: "DELETE",
+              url: url,
+              data: {_id: $(this).attr("id")},
+              success: function(data) { alert(data); window.location.reload(true); }  // If all goes well, we'll alert the user and reload the page to fetch updated data.
+            });
+          });
+        
+        });  // END of main script function
+      </script>
+  
+  </body>
+  
+</html>

@@ -1,0 +1,328 @@
+body {
+  margin: 0;
+  background: linear-gradient(170deg, #f9d5d4 50%, #d5d4f9);
+  background-attachment: fixed;
+  
+  font-family: "Roboto", sans-serif;
+  line-height: 1.5em;
+  color: #222;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;      /* Used along with flex and footer's margin-top=auto to keep the footer pinned to the bottom of the page no matter what */
+}
+
+.container {
+  margin: 2em 0.5em 0.5em 0.5em;
+  padding: 2em;
+  background: white;
+  max-width: 700px;
+  border-radius: 0.3em;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  color: #04b3ce;
+  font-size: 3em;
+  text-align: center;
+}
+
+.fourohfour{
+  text-align: center;
+}
+
+.fourohfour h1 {
+  font-size: 6em;
+}
+
+h2 {
+  color: #999;
+  font-size: 0.8em;
+  font-weight: lighter;
+  text-align: center;
+  margin-top: -1.5em;
+  margin-bottom: 3em;
+}
+
+h3 {
+  color: #04b3ce;
+  margin-top: 3em;
+}
+
+
+#testui {
+  display: flex;
+  flex-direction: column;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  
+  background: #04b3ce;
+  border-radius: 3px;
+  padding: 1em;
+  margin-bottom: 2em;
+  
+  text-align: left;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.form-left {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-basis: calc(66% - 1em);
+}
+
+.form-right {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-basis: calc(33% - 1em);
+}
+
+@media (max-width: 620px) {
+  .form-fields {
+    flex-direction: column;
+  }
+}
+
+form h3 {
+  color: white;
+  margin-top: 0;
+  padding: 0.5em 0;
+  
+  font-size: 1.5em;
+  text-align: center;
+}
+
+form label {
+  color: white;
+}
+
+input, textarea {
+  border: none;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  margin: 0 0 0.5em 0;
+  padding: 0.3em;
+  resize: vertical;
+  
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+/* Adding an asterisk to required fields in the forms: */
+input[required],
+textarea[required] {
+  background-image: url("https://cdn.glitch.com/b39281f3-c76d-42e6-97c0-8105f809af4e%2Fasterisk2.png?1555316696692");
+  background-repeat: no-repeat;
+  background-size: 0.6em 0.65em;
+  background-position: top right;  
+  background-origin: content-box;      /* respects the padding of the element */
+}
+
+input[type=checkbox] {
+  width: 0.85em;
+  height: 0.85em;
+  vertical-align: -0.05em;
+  margin-left: 1em;
+}
+
+button {
+  background: #04b3ce;
+  margin-top: 1em;
+  border: 2px solid #d5d4f9;
+  border-radius: 0.2em;
+  
+  padding: 0.8em 1em;
+  color: #d5d4f9;
+  font-weight: 900;
+  
+  transition: all 200ms;
+  transition: box-shadow 50ms;
+}
+
+button:hover {
+  background: #d5d4f9;
+  color: #04b3ce;
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+button:active {
+  box-shadow: none;
+}
+
+
+
+/*
+All of the styling for the views/issue.html page:
+*/
+
+.issue {
+  background: #cef4cd;
+  border-radius: 3px;
+  padding: 1em;
+  margin-bottom: 2em;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;    /* to make sure that the items go full-width in their "issue card" */
+}
+
+.issue.closed {
+  background: #eee;
+}
+
+.issue h3 {
+  font-size: 2em;
+  margin-top: 0;
+  text-align: center;
+}
+
+.issueId {
+  color: #666;
+  font-size: 0.8em;
+  margin-bottom: 1em;
+  margin-top: -2em;
+}
+
+/* Adding a little "closed" box after the issue ID: */
+.issue.closed .issueId::after {
+  content: "closed";
+  vertical-align: 2.5%;
+  color: #eee;            /* same color as the background for closed issues */
+  background: #f98c86;
+  margin-left: 1em;
+  border-radius: 3px;
+  padding: 0 0.5em;
+}
+
+/* Making the issue description and status appear in white boxes: */
+.description,
+.status {
+  margin-top: 0;
+  border-radius: 2px;
+  background: white;
+  padding: 0.3em;
+  min-height: 1.6em;    /* In case there is not data for the field, to avoid it collapsing (based off of 1em and 2x padding) */
+}
+
+/* Pushing issue buttons to the right side: */
+.buttons {
+  display: flex;
+  justify-content: flex-end;;
+}
+
+/* Making sure that the issue buttons have some space between them, and making them less tall than the standard button size: */
+.buttons button {
+  margin-left: 1em;
+  padding: 0.3em 1em;
+}
+
+.closeIssue {
+  background: none;
+  border: 2px solid #f98c86;
+  color: #f98c86;
+}
+
+.closeIssue:hover {
+  background: #f98c86;
+  color: white;
+}
+
+/* If the issue is marked as closed (i.e. class=closed), then we'll hide the close issue button: */
+.issue.closed .closeIssue {
+  display: none;
+}
+
+.deleteIssue {
+  background: none;
+  border: 2px solid red;
+  color: red;
+}
+
+.deleteIssue:hover {
+  background: red;
+  color: white;
+}
+
+
+
+.issueDetails {
+  background: #bff2bf;
+  border-radius: 0 0 3px 3px;
+  margin: 2em -1.25em -1.25em -1.25em;  /* Negatives to make it reach the edges of the "issue card" */
+  padding: 0.5em 1em;
+  
+  font-size: 0.8em;
+  color: #666;
+  
+  /* In order to only have a shadow on the top edge of the issueDetails area: */
+  box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.3);
+}
+
+/* If the issue is closed, we'll also want to change the background color of the issueDetails area: */
+.issue.closed .issueDetails {
+  background: #e8e8e8;
+}
+
+
+
+
+/*
+All the styling for CODE areas:
+*/
+
+pre {
+  background: #f7f7f7;
+  border-left: 0.5em solid #04b3ce;
+  border-radius: 0.3em;
+  padding: 1em;
+  
+  overflow: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+code {
+  background: #f7f7f7;
+  padding: 0.2em 1.5em;
+  border-radius: 0.3em;
+}
+
+
+
+
+/*
+All the styling for the footer:
+*/
+
+footer {
+  margin-top: auto;  /* Used along with body's display=flex and height=100vh to keep the footer pinned to the bottom of the page no matter what */
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #222;
+  
+  padding: 0.3em 2em;
+  text-align: center;
+  font-size: 0.8em;
+  color: #ccc;
+}
+
+footer a{
+  color: #ddd;
+}
+
+footer a:hover {
+  color: #d5d4f9;
+}

@@ -1,0 +1,36 @@
+{
+	"name": "issue-tracker",
+  "author": "Rakib",
+	"version": "0.0.1",
+	"description": "A project for freeCodeCamp's Information Security and Quality Assurance certification",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"dependencies": {
+		"express": "^4.14.0",
+		"cors": "^2.8.1",
+		"body-parser": "^1.15.2",
+		"mongodb": "^2.2.16",
+    "helmet": "^3.1.0",
+    "chai": "^3.5.0",		
+		"chai-http": "^3.0.0",
+		"mocha": "^3.2.0"		
+	},
+	"engines": {
+		"node": "10.15.3"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://glitch.com/edit/#!/polar-zenith"
+	},
+	"keywords": [
+		"node",
+		"express",
+    "freecodecamp",
+    "freeCodeCamp",
+    "FCC",
+    "Rakib"
+	],
+	"license": "MIT"
+}
